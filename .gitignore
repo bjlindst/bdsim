@@ -71,6 +71,7 @@ examples/features/options/*.dat
 
 .build*
 .install*
+cmake-build*
 
 # VSCode Development environment #
 ###########################
