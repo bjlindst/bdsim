@@ -80,8 +80,7 @@ namespace GMAD
   class Parser
   {
   public:
-    /// No default constructor
-    Parser() = delete;
+
     /// Constructor method
     static Parser* Instance(const std::string& filename);
     /// Access method
@@ -92,6 +91,8 @@ namespace GMAD
   protected:
     /// Constructor from filename
     explicit Parser(std::string filename);
+    /// Default contructor
+    Parser();
   private:
     /// Instance
     static Parser* instance;
@@ -135,6 +136,8 @@ namespace GMAD
     /// Get global object of parser class C
     template <class C>
     C& GetGlobal();
+    template <class C>
+    C* GetGlobalPtr();
     /// Get list for parser class C
     template <class C, class Container=FastList<C>>
     Container& GetList();
