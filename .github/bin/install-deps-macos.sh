@@ -11,3 +11,6 @@ brew upgrade
 
 # install BDSIM deps
 brew install wget clhep bison xerces-c root
+
+# install pybind11
+pip install pybind11
