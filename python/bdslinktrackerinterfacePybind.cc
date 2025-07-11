@@ -33,6 +33,17 @@ inline void set_element(py::array_t<T> &arr, int index, T value) {
   ptr[index] = value;
 }
 
+void selectCollimator(BDSIMLink* link, const std::string& collimatorName)
+{
+    // This doesn't throw an error if the element doesn't exist
+    std::cout << "Selecting collimator " << collimatorName << std::endl;
+    link->SelectLinkElement(collimatorName);
+
+    // Check if the element exists by querying the index: -1 means it doesn't exist
+    if (link->GetLinkIndex(collimatorName) == -1)
+        {throw std::runtime_error("Element not found " + collimatorName);}
+}
+
 BDSParticleDefinition* PrepareBDSParticleDefinition(long long int pdgIDIn, double momentumIn, 
                                                   double kineticEnergyIn, double ionChargeIn)
 {
@@ -123,6 +134,7 @@ PYBIND11_MODULE(bdslinktrackerinterface, m) {
       .def("GetBDSIMLink",&BDSLinkTrackerInterface::GetBDSIMLink)
       .def("TrackXSuite",[](BDSLinkTrackerInterface *tracker_interface,
                             int iElement,
+                            std::string elementName,
                             py::object particles) {
         py::print("Element BDSIM:",iElement);
         py::print("Particles:", particles);
@@ -241,11 +253,13 @@ PYBIND11_MODULE(bdslinktrackerinterface, m) {
 
         // run n particles
         auto link = tracker_interface->GetBDSIMLink();
-        link->BeamOn();
-
+        std::cout << "beam on with: " << bunch->Size() << std::endl;
+        selectCollimator(link, elementName);
+        link->BeamOn((G4int)bunch->Size());
+        std::cout << "finished tracking" << std::endl;
         // get sampler data
         const BDSHitsCollectionSamplerLink* hits = link->SamplerHits();
-
+        std::cout << "sampled hits: " << hits->GetSize() << std::endl;
         size_t hitsCount = 0;
         if (hits)
         {
