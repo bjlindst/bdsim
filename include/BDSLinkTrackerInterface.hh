@@ -35,6 +35,7 @@ public:
   BDSLinkBunch* GetBunchLink() {return linkBunch;}
   BDSIMLink* GetBDSIMLink() {return linkBDSIM;}
 
+  BDSParticleDefinition* GetReferenceParticleDefinition() const;
   BDSParticleDefinition* GetReferenceParticleDefinition() {return referenceParticleDefinition;}
   void SetReferenceParticleDefinition(BDSParticleDefinition *rpd) {referenceParticleDefinition = rpd;}
 
@@ -52,6 +53,9 @@ public:
                     std::vector<double> chi, std::vector<double> chargeRatio,
                     std::vector<double> s, std::vector<int> trackid,
                     std::vector<int> pdgid);
+
+  // TODO is this needed?
+  std::vector<bool>& GetParticleActiveState() { return particleActiveState; }
 
 protected:
 
@@ -94,6 +98,9 @@ protected:
 
   // reference particle
   BDSParticleDefinition* referenceParticleDefinition;
+
+  // todo, what is this for?
+  std::vector<bool> particleActiveState;
 };
 
 #endif
