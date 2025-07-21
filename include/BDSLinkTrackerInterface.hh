@@ -11,6 +11,22 @@ class BDSParticleDefinition;
 
 class BDSLinkTrackerInterface {
 public:
+    void SetNoNeutralParticles(bool val) { noNeutralParticles = val; }
+    bool GetNoNeutralParticles() const { return noNeutralParticles; }
+    void AddCollimator(const std::string& name,
+                       const std::string& material,
+                       double lengthIn,
+                       double apertureLeftIn,
+                       double apertureRightIn,
+                       double rotationIn,
+                       double xOffsetIn,
+                       double yOffsetIn,
+                       double jawTiltLeft,
+                       double jawTiltRight,
+                       int side,
+                       bool isACrystal);
+
+  void ClearXtrackData();
 
   ~BDSLinkTrackerInterface() = default;
 
@@ -58,7 +74,7 @@ public:
   std::vector<bool>& GetParticleActiveState() { return particleActiveState; }
 
 protected:
-
+    bool noNeutralParticles = true;  // default value
   // singleton pointer
   static BDSLinkTrackerInterface* singleton;
 
