@@ -112,39 +112,6 @@ void BDSLinkTrackerInterface::ClearXtrackData() // TODO separate ClearSamplerHit
     std::vector<bool>().swap(active_state);  // Efficient clear
 }
 
-void BDSLinkTrackerInterface::AddCollimator(const std::string& name,
-                                            const std::string& material,
-                                            double lengthIn,
-                                            double apertureLeftIn,
-                                            double apertureRightIn,
-                                            double rotationIn,
-                                            double xOffsetIn,
-                                            double yOffsetIn,
-                                            double jawTiltLeft,
-                                            double jawTiltRight,
-                                            int side,
-                                            bool isACrystal)
-{
-    bool buildLeft  = side == 0 || side == 1;
-    bool buildRight = side == 0 || side == 2;
-
-    auto* link = GetBDSIMLink();
-    link->AddLinkCollimatorJaw(name,
-                              material,
-                              lengthIn * CLHEP::m,
-                              apertureLeftIn * CLHEP::m,
-                              apertureRightIn * CLHEP::m,
-                              rotationIn * CLHEP::rad,
-                              xOffsetIn * CLHEP::m,
-                              yOffsetIn * CLHEP::m,
-                              jawTiltLeft * CLHEP::rad,
-                              jawTiltRight * CLHEP::rad,
-                              buildLeft,
-                              buildRight,
-                              isACrystal,
-                              0);
-}
-
 PYBIND11_MODULE(bdslinktrackerinterface, m) {
   py::class_<BDSLinkTrackerInterface>(m,"BDSLinkTrackerInterface")
       .def_static("GetInstance", [](std::string bdsimConfigFile,
@@ -182,19 +149,6 @@ PYBIND11_MODULE(bdslinktrackerinterface, m) {
                   py::return_value_policy::reference)
       .def("GetBunchLink",&BDSLinkTrackerInterface::GetBunchLink)
       .def("GetBDSIMLink",&BDSLinkTrackerInterface::GetBDSIMLink)
-        .def("AddCollimator", &BDSLinkTrackerInterface::AddCollimator,
-             py::arg("name"),
-             py::arg("material"),
-             py::arg("lengthIn"),
-             py::arg("apertureLeftIn"),
-             py::arg("apertureRightIn"),
-             py::arg("rotationIn"),
-             py::arg("xOffsetIn"),
-             py::arg("yOffsetIn"),
-             py::arg("jawTiltLeft"),
-             py::arg("jawTiltRight"),
-             py::arg("side"),
-             py::arg("isACrystal"))
       .def("TrackXSuite",[](BDSLinkTrackerInterface *tracker_interface,
                             int iElement,
                             std::string elementName,
