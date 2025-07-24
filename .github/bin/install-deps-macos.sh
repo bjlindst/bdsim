@@ -10,7 +10,7 @@ brew install python@3.13 --force-bottle
 brew upgrade
 
 # install BDSIM deps
-brew install wget clhep bison xerces-c root
+brew install wget clhep bison xerces-c root hdf5
 
 # install pybind11
 pip install pybind11
