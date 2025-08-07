@@ -39,6 +39,13 @@ BDSApertureInfo::BDSApertureInfo(BDSApertureType apertureTypeIn,
   aper3(aper3In),
   aper4(aper4In)
 {
+    std::cout << "first one" << std::endl;
+    std::cout << "apertureTypeIn: " << apertureTypeIn << std::endl;
+    std::cout << "aper1In: " << aper1In << std::endl;
+    std::cout << "aper2In: " << aper2In << std::endl;
+    std::cout << "aper3In: " << aper3In << std::endl;
+    std::cout << "aper4In: " << aper4In << std::endl;
+    std::cout << "nameForError: " << nameForError << std::endl;
   CheckApertureInfo(nameForError);
 }
 
@@ -53,6 +60,13 @@ BDSApertureInfo::BDSApertureInfo(G4String apertureTypeIn,
   aper3(aper3In),
   aper4(aper4In)
 {
+    std::cout << "second one" << std::endl;
+    std::cout << "apertureTypeIn: " << apertureTypeIn << std::endl;
+    std::cout << "aper1In: " << aper1In << std::endl;
+    std::cout << "aper2In: " << aper2In << std::endl;
+    std::cout << "aper3In: " << aper3In << std::endl;
+    std::cout << "aper4In: " << aper4In << std::endl;
+    std::cout << "nameForError: " << nameForError << std::endl;
   apertureType = BDS::DetermineApertureType(apertureTypeIn);
   CheckApertureInfo(nameForError);
 }
@@ -86,7 +100,13 @@ BDSApertureInfo::BDSApertureInfo(BDSApertureInfo* defaultInfo,
     {aper4 = defaultInfo->aper4;}
   else
     {aper4 = aper4In;}
-  
+    std::cout << "third one" << std::endl;
+    std::cout << "apertureTypeIn: " << apertureTypeIn << std::endl;
+    std::cout << "aper1In: " << aper1In << std::endl;
+    std::cout << "aper2In: " << aper2In << std::endl;
+    std::cout << "aper3In: " << aper3In << std::endl;
+    std::cout << "aper4In: " << aper4In << std::endl;
+    std::cout << "nameForError: " << nameForError << std::endl;
   CheckApertureInfo(nameForError);
 }
   
@@ -188,13 +208,13 @@ void BDSApertureInfo::CheckRequiredParametersSet(G4bool setAper1,
 						 G4bool setAper3,
 						 G4bool setAper4)
 {
-#ifdef BDSDEBUG
+//#ifdef BDSDEBUG
   G4cout << __METHOD_NAME__ << G4endl;
   G4cout << "aper1: " << aper1 << " check it? " << setAper1 << G4endl;
   G4cout << "aper2: " << aper2 << " check it? " << setAper2 << G4endl;
   G4cout << "aper3: " << aper3 << " check it? " << setAper3 << G4endl;
   G4cout << "aper4: " << aper4 << " check it? " << setAper4 << G4endl;
-#endif
+//#endif
   if (setAper1 && !BDS::IsFinite(aper1))
     {throw BDSException("","\"aper1\" not set, but required to be.");}
   if (setAper2 && !BDS::IsFinite(aper2))

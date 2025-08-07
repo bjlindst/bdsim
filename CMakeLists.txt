@@ -176,6 +176,8 @@ list(APPEND bdsim_sources ${CMAKE_CURRENT_BINARY_DIR}/src/BDSIMClass.cc)
 list(REMOVE_ITEM bdsim_sources ${CMAKE_CURRENT_SOURCE_DIR}/src/BDSIMClass.cc)
 list(APPEND bdsim_sources ${CMAKE_CURRENT_BINARY_DIR}/src/BDSVisManager.cc)
 list(REMOVE_ITEM bdsim_sources ${CMAKE_CURRENT_SOURCE_DIR}/src/BDSVisManager.cc)
+list(APPEND bdsim_sources ${CMAKE_CURRENT_BINARY_DIR}/../src/CrystalDeflector.cc)
+list(APPEND bdsim_sources ${CMAKE_CURRENT_BINARY_DIR}/../src/CrystalDeflectorConstructor.cc)
 
 # Add Modules
 add_subdirectory(modules)

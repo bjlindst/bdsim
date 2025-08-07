@@ -22,7 +22,7 @@ namespace py = pybind11;
 #include "BDSLinkBunch.hh"
 #include "BDSException.hh"
 #include "BDSSamplerCustom.hh"
-
+#include "CrystalDeflectorConstructor.hh"
 
 template <typename T>
 T* make_ptr(py::array_t<T> &arr) {
@@ -54,6 +54,12 @@ void SelectElement(BDSIMLink* link, const std::string& elementName)
   // Check if the element exists by querying the index: -1 means it doesn't exist
   if (link->GetLinkIndex(elementName) == -1)
     {throw std::runtime_error("Element not found " + elementName);}
+}
+
+void BDSLinkTrackerInterface::RegisterCrystalDeflector() {
+    auto* link = GetBDSIMLink();  // Retrieve pointer to BDSIMLink
+    link->RegisterUserComponent("crystaldeflector", new CrystalDeflectorConstructor());
+    std::cout << "Registered crystaldeflector" << std::endl;
 }
 
 BDSParticleDefinition* PrepareBDSParticleDefinition(long long int pdgIDIn, double momentumIn,
@@ -155,6 +161,7 @@ PYBIND11_MODULE(bdslinktrackerinterface, m) {
                   py::return_value_policy::reference)
       .def("GetBunchLink",&BDSLinkTrackerInterface::GetBunchLink,py::return_value_policy::reference)
       .def("GetBDSIMLink",&BDSLinkTrackerInterface::GetBDSIMLink,py::return_value_policy::reference)
+      .def("RegisterCrystalDeflector", &BDSLinkTrackerInterface::RegisterCrystalDeflector)
       .def("TrackXSuite",[](BDSLinkTrackerInterface *tracker_interface,
           int iElement,
           std::string elementName,
@@ -304,6 +311,8 @@ void TrackXSuite(BDSLinkTrackerInterface *tracker_interface,
 
         auto part = bunch->GetNextParticle(); // Advance through the bunch
         auto prim_part_id = bunch->CurrentExternalParticleID(); // Get the ID of the primary particle
+
+        std::cout << "particle: " << part << std::endl;
 
         // Now start looping over the hits - the particles to be returned to the tracker
         // These can be primary or secondary particles. Each primary can produce 0, 1, or 2+ products

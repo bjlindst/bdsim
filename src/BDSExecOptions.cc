@@ -177,12 +177,12 @@ void BDSExecOptions::Parse(int argc, char **argv)
               }
             else if ( !strcmp(optionName, "version") )
               {
-                G4cout << "@BDSIM_VERSION@" << G4endl;
+                G4cout << "1.7.7.develop" << G4endl;
                 exit(0);
               }
             else if ( !strcmp(optionName, "versionGit") )
               {
-                G4cout << "@BDSIM_VERSION@ based on git commit SHA1: @VERSION_SHA1@" << G4endl;
+                G4cout << "1.7.7.develop based on git commit SHA1: v1.7.7-rc2-496-g58744a327-dirty" << G4endl;
                 exit(0);
               }
             else if ( !strcmp(optionName , "batch") )
@@ -500,8 +500,8 @@ void BDSExecOptions::Usage() const
 void BDSExecOptions::PrintCopyright() const
 {
   // Print header & program information
-  G4cout<<"BDSIM : version @BDSIM_VERSION@"<<G4endl;
-  G4cout<<"        (C) 2001-@CURRENT_YEAR@ Royal Holloway University London - GPLv3"  << G4endl;
+  G4cout<<"BDSIM : version 1.7.7.develop"<<G4endl;
+  G4cout<<"        (C) 2001-2025 Royal Holloway University London - GPLv3"  << G4endl;
   G4cout<<G4endl;
   G4cout<<"        Reference: Computer Physics Communications, 107200 (2020)" << G4endl;
   G4cout<<"                   https://doi.org/10.1016/j.cpc.2020.107200"      << G4endl;

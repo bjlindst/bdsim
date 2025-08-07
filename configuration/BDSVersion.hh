@@ -16,4 +16,4 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with BDSIM.  If not, see <http://www.gnu.org/licenses/>.
 */
-#define BDSIM_GIT_VERSION "@VERSION_SHA1@"
+#define BDSIM_GIT_VERSION "v1.7.7-rc2-496-g58744a327-dirty"

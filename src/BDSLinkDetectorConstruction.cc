@@ -64,7 +64,8 @@ along with BDSIM.  If not, see <http://www.gnu.org/licenses/>.
 
 class BDSParticleDefinition;
 
-BDSLinkDetectorConstruction::BDSLinkDetectorConstruction():
+BDSLinkDetectorConstruction::BDSLinkDetectorConstruction(BDSComponentFactoryUser* userComponentFactoryin):
+  userComponentFactory(userComponentFactoryin),
   worldSolid(nullptr),
   worldPV(nullptr),
   linkBeamline(nullptr),
@@ -444,8 +445,7 @@ G4int BDSLinkDetectorConstruction::AddLinkCollimatorTipJaw(const std::string& co
 }
 
 G4int BDSLinkDetectorConstruction::AddLinkElement(GMAD::Element el) {
-  auto componentFactory = std::unique_ptr<BDSComponentFactory>(new BDSComponentFactory(nullptr, false));
-
+  auto componentFactory = std::unique_ptr<BDSComponentFactory>(new BDSComponentFactory(userComponentFactory, false));
   if (!integral)
   {
     if (!designParticle)
@@ -474,6 +474,16 @@ G4int BDSLinkDetectorConstruction::AddLinkElement(GMAD::Element el) {
   BDSTiltOffset* to = new BDSTiltOffset(el.offsetX * CLHEP::m, el.offsetY * CLHEP::m, el.tilt * CLHEP::rad);
   auto extentTiltOffset = component->GetExtent().TiltOffset(to);
   G4double encompassingRadius = extentTiltOffset.TransverseBoundingRadius();
+  std::cout << "In BDSLinkDetectorConstruction::AddLinkElement:" << std::endl;
+  std::cout << "el.name:" << el.name << std::endl;
+  std::cout << "el.aper1:" << el.aper1 << std::endl;
+  std::cout << "component:" << component << std::endl;
+  std::cout << "to:" << to << std::endl;
+  std::cout << "encompassingRadius:" << encompassingRadius << std::endl;
+  if (encompassingRadius == 0) {
+    encompassingRadius = el.aper1*2;
+    std::cout << "reset encompassingRadius:" << encompassingRadius << std::endl;
+  }
   BDSLinkOpaqueBox* opaqueBox = new BDSLinkOpaqueBox(component, to, encompassingRadius);
 
   // Add to beamline
@@ -481,6 +491,14 @@ G4int BDSLinkDetectorConstruction::AddLinkElement(GMAD::Element el) {
   BDSAcceleratorModel::Instance()->RegisterLinkComponent(comp);
   BDSSamplerInfo* samplerInfo = new BDSSamplerInfo(comp->GetName() + "_out", BDSSamplerType::plane);
   linkBeamline->AddComponent(comp, nullptr, samplerInfo);
+  std::cout << "comp->GetName()" << comp->GetName() << std::endl;
+  //std::cout << "comp->GetExtentX()" << comp->GetExtentX() << std::endl;
+  //std::cout << "comp->GetExtentY()" << comp->GetExtentY() << std::endl;
+  //std::cout << "comp->GetExtentZ()" << comp->GetExtentY() << std::endl;
+  std::cout << "opaqueBox->GetName()" << opaqueBox->GetName() << std::endl;
+  std::cout << "opaqueBox->GetExtent().DX()" << opaqueBox->GetExtent().DX() << std::endl;
+  std::cout << "opaqueBox->GetExtent().DY()" << opaqueBox->GetExtent().DY() << std::endl;
+  std::cout << "opaqueBox->GetExtent().DZ()" << opaqueBox->GetExtent().DZ() << std::endl;
 
   // Update world extents and solid
   UpdateWorldSolid();

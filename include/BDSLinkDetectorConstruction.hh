@@ -33,6 +33,7 @@ along with BDSIM.  If not, see <http://www.gnu.org/licenses/>.
 class BDSBeamline;
 class BDSBeamlineElement;
 class BDSBeamlineIntegral;
+class BDSComponentFactoryUser;
 class BDSLinkPrimaryGeneratorAction;
 class BDSLinkRegistry;
 class BDSParticleDefinition;
@@ -53,7 +54,7 @@ class BDSLinkDetectorConstruction: public G4VUserDetectorConstruction
 {
 public:
   /// Default constructor
-  BDSLinkDetectorConstruction();
+  explicit BDSLinkDetectorConstruction(BDSComponentFactoryUser* userComponentFactoryin);
 
   virtual ~BDSLinkDetectorConstruction();
   virtual G4VPhysicalVolume* Construct();
@@ -117,8 +118,9 @@ public:
   void UpdateWorldSolid();
 
   /// Place a beam line element in the world.
-  G4int PlaceOneComponent(const BDSBeamlineElement* element, const G4String& originalName);
 
+  G4int PlaceOneComponent(const BDSBeamlineElement* element, const G4String& originalName);
+  BDSComponentFactoryUser* userComponentFactory;
   G4Box* worldSolid;
   G4VPhysicalVolume* worldPV;
   BDSExtent worldExtent;

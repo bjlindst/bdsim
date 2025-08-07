@@ -44,8 +44,8 @@ along with BDSIM.  If not, see <http://www.gnu.org/licenses/>.
 int main(int argc, char** argv)
 {
   /// Print header & program information
-  G4cout<<"bdsinterpolator : version @BDSIM_VERSION@"<<G4endl;
-  G4cout<<"                  (C) 2001-@CURRENT_YEAR@ Royal Holloway University London"<<G4endl;
+  G4cout<<"bdsinterpolator : version 1.7.7.develop"<<G4endl;
+  G4cout<<"                  (C) 2001-2025 Royal Holloway University London"<<G4endl;
   G4cout<<"                  http://www.pp.rhul.ac.uk/bdsim"<<G4endl;
   G4cout<<G4endl;
 

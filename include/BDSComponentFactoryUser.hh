@@ -78,9 +78,12 @@ public:
 					      GMAD::Element const* prevElementIn,
 					      GMAD::Element const* nextElementIn,
                 const BDSBeamlineIntegral& integral);
-  
+
 private:
   /// Map of user component name with constructors to build a component.
   std::map<G4String, BDSComponentConstructor*> userFunctions;
 };
+
+//extern BDSComponentFactoryUser* userComponentFactory;
+
 #endif

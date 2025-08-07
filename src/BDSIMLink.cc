@@ -73,6 +73,7 @@ along with BDSIM.  If not, see <http://www.gnu.org/licenses/>.
 #include <map>
 #include <set>
 
+#include "BDSWarning.hh"
 
 BDSIMLink::BDSIMLink(BDSBunch* bunchIn):
   ignoreSIGINT(false),
@@ -89,6 +90,7 @@ BDSIMLink::BDSIMLink(BDSBunch* bunchIn):
   construction(nullptr),
   runAction(nullptr),
   currentElementIndex(0),
+userComponentFactory(nullptr),
   userPhysicsList(nullptr)
 {
   if(!bdsBunch) {
@@ -192,7 +194,7 @@ int BDSIMLink::Initialise(double minimumKineticEnergy,
   runManager = new BDSLinkRunManager();
 
   /// Register the geometry and parallel world construction methods with run manager.
-  construction = new BDSLinkDetectorConstruction();
+  construction = new BDSLinkDetectorConstruction(userComponentFactory);
 
   /// Here the geometry isn't actually constructed - this is called by the runManager->Initialize()
   auto parallelWorldsRequiringPhysics = BDS::ConstructAndRegisterParallelWorlds(construction, true, false);
@@ -663,4 +665,25 @@ void BDSIMLink::SetCurrentMaximumExternalParticleID(int currentMaximumExternalPa
 {
   if (runAction)
     {runAction->SetMaximumExternalParticleID(currentMaximumExternalParticleID);}
+}
+
+void BDSIMLink::RegisterUserComponent(const G4String& componentTypeName,
+                                  BDSComponentConstructor* componentConstructor)
+{
+  if (initialised)
+  {BDS::Warning(__METHOD_NAME__, "BDSIM kernel already initialised - this component will not be available");}
+  if (!userComponentFactory)
+  {userComponentFactory = new BDSComponentFactoryUser();}
+  std::cout << "[DEBUG] BDSIMLink::RegisterUserComponent called for type " << componentTypeName << std::endl;
+  std::cout << "[DEBUG] userComponentFactory before: " << userComponentFactory << std::endl;
+  userComponentFactory->RegisterComponent(componentTypeName,
+                                          componentConstructor);
+  if (!userComponentFactory)
+  {
+    std::cout << "[DEBUG] Creating new BDSComponentFactoryUser" << std::endl;
+    userComponentFactory = new BDSComponentFactoryUser();
+  }
+  std::cout << "[DEBUG] userComponentFactory after: " << userComponentFactory << std::endl;
+
+  std::cout << "Registered component " << componentTypeName << std::endl;
 }

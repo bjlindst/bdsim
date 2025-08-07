@@ -13,6 +13,8 @@
 #include "BDSIMLink.hh"
 #include "BDSParticleDefinition.hh"
 
+#include "CrystalDeflectorConstructor.hh"
+
 BDSLinkTrackerInterface* BDSLinkTrackerInterface::singleton = nullptr;
 
 BDSLinkTrackerInterface* BDSLinkTrackerInterface::GetInstance(std::string bdsimConfigFileIn,
@@ -100,6 +102,7 @@ BDSLinkTrackerInterface::BDSLinkTrackerInterface(std::string bdsimConfigFileIn,
     c_args.push_back(const_cast<char*>(arg.c_str()));
   }
 
+  linkBDSIM->RegisterUserComponent("crystaldeflector", new CrystalDeflectorConstructor());
   // initialise link object
   linkBDSIM->Initialise(c_args.size(),
                         c_args.data(),

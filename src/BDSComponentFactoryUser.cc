@@ -54,3 +54,6 @@ BDSAcceleratorComponent* BDSComponentFactoryUser::ConstructComponent(const G4Str
 						     nextElementIn,
                  integral);
 }
+
+//BDSComponentFactoryUser* userComponentFactory = nullptr;
+

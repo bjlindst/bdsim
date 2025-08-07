@@ -270,7 +270,7 @@ G4VPhysicalVolume* BDSDetectorConstruction::Construct()
 
   // placement procedure - put everything in the world
   ComponentPlacement(worldPV);
-  
+
   if (verbose || debug)
     {G4cout << __METHOD_NAME__ << "detector Construction done" << G4endl;}
   

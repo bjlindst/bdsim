@@ -60,6 +60,8 @@ public:
                     std::vector<double> s, std::vector<int> trackid,
                     std::vector<int> pdgid);
 
+  void RegisterCrystalDeflector();
+
   // TODO is this needed?
   std::vector<bool>& GetParticleActiveState() { return particleActiveState; }
 

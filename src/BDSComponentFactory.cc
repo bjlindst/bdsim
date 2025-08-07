@@ -114,6 +114,9 @@ along with BDSIM.  If not, see <http://www.gnu.org/licenses/>.
 #include <string>
 #include <utility>
 
+#include "CrystalDeflector.hh"
+#include "CrystalDeflectorConstructor.hh"
+
 using namespace GMAD;
 
 G4bool BDSComponentFactory::coloursInitialised = false;
@@ -165,6 +168,13 @@ BDSAcceleratorComponent* BDSComponentFactory::CreateComponent(Element const* ele
 							      Element const* nextElementIn,
 							      BDSBeamlineIntegral& integral)
 {
+    std::cout << "[DEBUG] BDSComponentFactory::CreateComponent called" << std::endl;
+    std::cout << "[DEBUG] userComponentFactory = " << userComponentFactory << std::endl;
+    if (!userComponentFactory)
+    {
+        std::cerr << "[ERROR] userComponentFactory is NULL in CreateComponent" << std::endl;
+    }
+    std::cout << "[DEBUG] Requested user component: " << elementIn->userTypeName << std::endl;
   switch (elementIn->type)
   {
     case ElementType::_MARKER:

@@ -193,5 +193,9 @@ G4int BDSLinkOpaqueBox::PlaceOutputSampler()
 		    false,
 		    samplerID,
 		    true);
+	std::cout << "samplerID: " << samplerID << std::endl;
+	std::cout << "position: " << position << std::endl;
+	std::cout << "samplerName: " << samplerName << std::endl;
+	std::cout << "sampler->GetContainerLogicalVolume()->GetName(): " << sampler->GetContainerLogicalVolume()->GetName() << std::endl;
   return samplerID;
 }
