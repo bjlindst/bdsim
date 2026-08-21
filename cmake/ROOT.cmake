@@ -8,6 +8,9 @@ include_directories(SYSTEM ${ROOT_INCLUDE_DIR})
 # Make Dictionaries
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/root)
 file(GLOB linkHeaders ${CMAKE_CURRENT_SOURCE_DIR}/include/*LinkDef.hh)
+if(NOT USE_BOOST)
+  list(FILTER linkHeaders EXCLUDE REGEX "BDSBH4DLinkDef")
+endif()
 # for loop over link definitions
 foreach(header ${linkHeaders})
   # remove LinkDef.hh

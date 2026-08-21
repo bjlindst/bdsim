@@ -242,6 +242,15 @@ void TrackXSuite(BDSLinkTrackerInterface *tracker_interface,
             G4double p = ref->Momentum() * (delta_ptr[i] + 1) * mass_ratio;
 
             auto partDef = PrepareBDSParticleDefinition(pdgid_ptr[i], p, 0, q);
+
+            if (n_active == 0) {  // first active particle
+                std::cout << "--- first bunch particle, as BDSIM/Geant4 sees it ---" << std::endl;
+                std::cout << "  p (computed)          : " << p / CLHEP::MeV << " MeV/c" << std::endl;
+                std::cout << "  partDef->Momentum()   : " << partDef->Momentum()   / CLHEP::MeV << " MeV/c" << std::endl;
+                std::cout << "  partDef->TotalEnergy(): " << partDef->TotalEnergy() / CLHEP::MeV << " MeV"   << std::endl;
+                std::cout << "  partDef->KineticEnergy: " << partDef->KineticEnergy()/ CLHEP::MeV << " MeV"   << std::endl;
+            }
+
             G4double t = - zeta_ptr[i] * CLHEP::m / (ref->Beta() * CLHEP::c_light);
 
             G4double oneplusdelta = (1 + delta_ptr[i]) * mass_ratio;
@@ -312,7 +321,8 @@ void TrackXSuite(BDSLinkTrackerInterface *tracker_interface,
         auto part = bunch->GetNextParticle(); // Advance through the bunch
         auto prim_part_id = bunch->CurrentExternalParticleID(); // Get the ID of the primary particle
 
-        std::cout << "particle: " << part << std::endl;
+        //std::cout << "particle: " << part << std::endl;
+        //std::cout << "part type: " << typeid(part).name() << std::endl;
 
         // Now start looping over the hits - the particles to be returned to the tracker
         // These can be primary or secondary particles. Each primary can produce 0, 1, or 2+ products
@@ -437,8 +447,8 @@ void TrackXSuite(BDSLinkTrackerInterface *tracker_interface,
         prim_survied = false; // reset for next particle
         sum_secondary_energy = 0.0;
     }
-    std::cout << "ref energy is: " << ref->Momentum() << std::endl;
-    std::cout << "ref energy submitted in GeV is: " << referenceKineticEnergy / CLHEP::GeV << std::endl;
+    std::cout << "ref momentum in MeV is: " << ref->Momentum() << std::endl;
+    std::cout << "ref momentum submitted in MeV is: " << referenceKineticEnergy / CLHEP::MeV << std::endl;
     // clean BDSLinkBunch of particles
     tracker_interface->ClearXtrackData();
 }
