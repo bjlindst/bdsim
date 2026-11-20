@@ -478,7 +478,7 @@ const BDSLinkComponent* BDSIMLink::GetLinkComponent(int linkID) const
   const BDSBeamline* bl = construction->LinkBeamline();
   if (!bl)
     {return nullptr;}
-  if (linkID > (int)bl->size())
+  if (linkID < 0 || linkID >= (int)bl->size())
     {return nullptr;}
   const auto rawAccComponent = bl->at(linkID)->GetAcceleratorComponent();
   const auto linkComponent = dynamic_cast<const BDSLinkComponent*>(rawAccComponent);
