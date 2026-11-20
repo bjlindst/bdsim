@@ -128,6 +128,14 @@ void CrystalDeflector::BuildContainerLogicalVolume()
 
   G4cout  << "chordLength = "<< chordLength << G4endl ;
 
+  // Set the extent of the component to its container. Without it the extent
+  // stays zero, and the BDSIM link then sizes the output sampler from the
+  // placement offset alone: particles exiting outside that (small) radius are
+  // not recorded, and hence counted as lost.
+  SetExtent(BDSExtent(containerHorizontalWidth * 0.5,
+                      containerHorizontalWidth * 0.5,
+                      chordLength * 0.5));
+
   // containerLogicalVolume is a member of BDSAcceleratorComponent we should fill in
   containerLogicalVolume = new G4LogicalVolume(containerSolid,
 					       vacuum,
