@@ -32,9 +32,6 @@ G4double G4Fix_EMDissociationCrossSection::GetElementCrossSection(const G4Dynami
 {
   const G4double ekin = dp->GetKineticEnergy();
   const G4double mass = dp->GetMass();
-  // Geant4 works correctly here (or returns 0 for these cases)
-  if (Z <= 1 || ekin < 2.0*MeV || mass <= 0.0 || ekin < 1000.0*mass)
-    {return G4EMDissociationCrossSection::GetElementCrossSection(dp, Z, mat);}
 
   // exact beta from the kinetic energy: beta = sqrt(t(t+2))/(t+1), with t = Ekin/m
   const G4double t = ekin / mass;
