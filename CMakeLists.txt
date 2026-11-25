@@ -183,6 +183,8 @@ list(REMOVE_ITEM bdsim_sources ${CMAKE_CURRENT_SOURCE_DIR}/src/BDSVisManager.cc)
 # as the user component "crystaldeflector" (not picked up by the BDS*.cc glob)
 list(APPEND bdsim_sources ${CMAKE_CURRENT_SOURCE_DIR}/src/CrystalDeflector.cc)
 list(APPEND bdsim_sources ${CMAKE_CURRENT_SOURCE_DIR}/src/CrystalDeflectorConstructor.cc)
+# G4FIX: patches of Geant4 bugs (remove once fixed in Geant4)
+list(APPEND bdsim_sources ${CMAKE_CURRENT_SOURCE_DIR}/src/G4Fix_EMDissociationCrossSection.cc)
 
 # Add Modules
 add_subdirectory(modules)

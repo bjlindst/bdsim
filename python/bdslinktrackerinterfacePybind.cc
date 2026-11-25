@@ -49,19 +49,12 @@ namespace py = pybind11;
 #include "G4VPhysicalVolume.hh"
 #include "G4VSolid.hh"
 
-#include "G4EMDissociation.hh"
 #include "G4FastSimulationHelper.hh"
 #include "G4FastSimulationManagerProcess.hh"
 #include "G4Proton.hh"
 #include "G4coutDestination.hh"
 #include "G4ios.hh"
-#include "G4EMDissociationCrossSection.hh"
-#include "G4EMDissociationSpectrum.hh"
-#include "G4DynamicParticle.hh"
-#include "G4NistManager.hh"
-#include "G4PhysicsFreeVector.hh"
 #include "G4GenericIon.hh"
-#include "G4HadronicProcess.hh"
 #include "G4ProcessManager.hh"
 #include "G4ProcessVector.hh"
 #include "CLHEP/Units/SystemOfUnits.h"
@@ -415,78 +408,6 @@ void PrintLinkElementInfo(BDSIMLink* link, int iElement, const std::string& elem
   std::cout << out.str() << std::flush;
 }
 
-// Electromagnetic dissociation (EMD) of heavy ions does not work at LHC energies
-// with Geant4 11: G4DynamicParticle::ComputeBeta() returns exactly 1 when the
-// Lorentz factor is above ~1000 (e.g. above ~180 TeV kinetic energy for Os-192),
-// which makes G4EMDissociationCrossSection compute 1/sqrt(1 - beta^2) = inf, and
-// return a cross section of NaN. The process is then never selected.
-// This is fixed here, from the link (once, after the physics is built): a cross
-// section with an exact beta is added to the EMD process (the last applicable data
-// set is used). The EMD model itself takes beta from the four-momentum, and is not
-// affected. As a safeguard, the 100 TeV maximum energy that BDSPhysicsEMDissociation
-// sets on the EMD model is raised as well (for ions the model energy range is
-// probably checked per nucleon, in which case that limit is not reached anyway).
-class EMDissociationCrossSectionExactBeta : public G4EMDissociationCrossSection
-{
-public:
-  G4double GetElementCrossSection(const G4DynamicParticle* dp, G4int Z,
-                                  const G4Material* mat) override
-  {
-    const G4double ekin = dp->GetKineticEnergy();
-    const G4double mass = dp->GetMass();
-    if (Z <= 1 || ekin < 2.0*CLHEP::MeV || mass <= 0.0 || ekin < 1000.0*mass)
-      {return G4EMDissociationCrossSection::GetElementCrossSection(dp, Z, mat);}
-    const G4double t = ekin / mass;
-    const G4double b = std::sqrt(t*(t + 2.0)) / (t + 1.0);
-    const G4ParticleDefinition* def = dp->GetDefinition();
-    const G4double AP = def->GetBaryonNumber();
-    const G4double ZP = def->GetPDGCharge();
-    const G4double AT = G4NistManager::Instance()->GetAtomicMassAmu(Z);
-    const G4double ZT = (G4double)Z;
-    const G4double bmin = spectrum.GetClosestApproach(AP, ZP, AT, ZT, b);
-    G4PhysicsFreeVector* xsP = GetCrossSectionForProjectile(AP, ZP, AT, ZT, b, bmin);
-    G4PhysicsFreeVector* xsT = GetCrossSectionForTarget(AP, ZP, AT, ZT, b, bmin);
-    const G4double xs = (*xsP)[0] + (*xsP)[1] + (*xsT)[0] + (*xsT)[1];
-    delete xsP;
-    delete xsT;
-    return xs;
-  }
-
-private:
-  G4EMDissociationSpectrum spectrum;
-};
-
-void FixEMDissociation()
-{
-  static bool done = false;
-  if (done)
-    {return;}
-  done = true;
-  const G4double maxEnergy = 100*CLHEP::PeV;
-  G4ProcessManager* pm = G4GenericIon::GenericIon()->GetProcessManager();
-  if (!pm)
-    {return;}
-  G4ProcessVector* pv = pm->GetProcessList();
-  for (G4int i = 0; i < (G4int)pv->size(); ++i)
-    {
-      auto* hp = dynamic_cast<G4HadronicProcess*>((*pv)[i]);
-      if (!hp)
-        {continue;}
-      bool hasEMD = false;
-      for (auto* model : hp->GetHadronicInteractionList())
-        {
-          auto* emd = dynamic_cast<G4EMDissociation*>(model);
-          if (!emd)
-            {continue;}
-          hasEMD = true;
-          if (emd->GetMaxEnergy() < maxEnergy)
-            {emd->SetMaxEnergy(maxEnergy);}
-        }
-      if (hasEMD)
-        {hp->AddDataSet(new EMDissociationCrossSectionExactBeta());}
-    }
-}
-
 // Crystal channelling (G4ChannelingFastSimModel) is done with Geant4 fast
 // simulation, which BDSIM's channelling physics lists only activate for e-, e+ and
 // protons (BDS::ChannellingPhysicsComplete). The model itself works for any charged
@@ -682,7 +603,6 @@ void TrackXSuite(BDSLinkTrackerInterface *tracker_interface,
       {throw std::runtime_error("TrackXSuite> Could not determine the length of element " + elementName);}
     if (verbosity > 0)
       {PrintLinkElementInfo(link, iElement, elementName, n_active, collLength);}
-    FixEMDissociation();
     ActivateIonChannelling();
     InstallG4coutFilter();
     link->BeamOn((G4int)bunch->Size());
